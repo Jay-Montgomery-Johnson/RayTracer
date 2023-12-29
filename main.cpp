@@ -1,4 +1,6 @@
 #include "vec3.hpp"
+#include "ray.hpp"
+#include "camera.hpp"
 #include <iostream>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -6,6 +8,8 @@
 #include "stb_image_write.h"
 
 int main() {
+    Camera cam;
+    cam.render();
     return 0;
 }
 

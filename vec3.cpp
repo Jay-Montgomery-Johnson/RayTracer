@@ -85,4 +85,3 @@ Vec3 unit_vector(Vec3 &u) {
     return u / u.length();
 }
 
-using Point3 = Vec3;
