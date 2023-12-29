@@ -70,9 +70,10 @@ Vec3 operator/(Vec3 &u, double t) {
     return Vec3(u.get_x() / t, u.get_y() / t, u.get_z() / t);
 }
 
-float dot_product(Vec3 &u, Vec3 &v) {
+double dot_product(Vec3 &u, Vec3 &v) {
     return (u.get_x() * v.get_x()) + (u.get_y() * v.get_y()) + (u.get_z() * v.get_z());
 }
+
 
 Vec3 cross_product(Vec3 &u, Vec3 &v) {
     float i = u.get_y()*v.get_z() - u.get_z()*v.get_y();

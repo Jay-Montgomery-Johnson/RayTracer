@@ -29,7 +29,7 @@ Vec3 operator*(Vec3 &u, Vec3 &v);
 Vec3 operator*(Vec3 &u, double t);
 Vec3 operator/(Vec3 &u, double t);
 
-float dot_product(Vec3 &u, Vec3 &v);
+double dot_product(Vec3 &u, Vec3 &v);
 
 Vec3 cross_product(Vec3 &u, Vec3 &v);
 

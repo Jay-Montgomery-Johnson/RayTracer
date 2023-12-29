@@ -40,7 +40,20 @@ Vec3 Camera::ray_color(int i, int j) {
     float y_max = upper_left.get_y();
     Ray current_ray = get_ray(i, j);
     Vec3 red = get_color(1.0f, 0.2f, 0.2f);
-    if (hit_sphere(Vec3(0, 0, 100), 50, current_ray)) { return red;}
+    Vec3 circle_center = Vec3(0, 0, 100);
+    float t = hit_sphere(circle_center, 75, current_ray);
+    if (t >= 0) {
+        //std::cout << t << " ";
+        Vec3 point_on_sphere = current_ray.get_position(t);
+        Vec3 normal = point_on_sphere - circle_center;
+        //point_on_sphere.print_vec();
+        normal = unit_vector(normal);
+        //std::cout << normal.get_z() << "  ";
+        float scaled_r = 0.5*(normal.get_x() + 1);
+        float scaled_g = 0.5*(normal.get_y() + 1);
+        float scaled_b = 0.5*(normal.get_z() + 1);
+        return get_color(scaled_r, scaled_g, scaled_b);
+    }
 
     Vec3 current_direction = current_ray.get_direction();
     float y_ray = current_direction.get_y();
@@ -70,7 +83,6 @@ void Camera::render() {
             pixels[index++] = color.get_z();
         }
     }
-    std::cout << "hello there \n";
     stbi_write_png("stbpng1.png", width, height, CHANNEL_NUM, pixels, width * CHANNEL_NUM);
 }
 
@@ -81,16 +93,21 @@ Vec3 get_color(float r, float g, float b) {
     return Vec3(ir, ig, ib);
 }
 
-bool hit_sphere(Vec3 C, float r, Ray new_ray) {
+float hit_sphere(Vec3 C, float r, Ray new_ray) {
     Vec3 o = new_ray.get_origin();
     Vec3 d = new_ray.get_direction();
     Vec3 o_C = o - C;
     Vec3 d2 = d * 2;
 
-    float a = dot_product(d, d);
-    float b = dot_product(d2, o_C);
-    float c = dot_product(o_C, o_C) - r*r;
-
-    float discriminant = std::sqrt(b*b - 4*a*c);
-    return (discriminant >= 0);
+    double a = dot_product(d, d);
+    double b = dot_product(d2, o_C);
+    double c = dot_product(o_C, o_C) - r*r;
+    double discriminant = b*b - 4*a*c;
+    if (discriminant < 0) {return -1.0f;}
+    else {
+        double top = b + std::sqrt(discriminant);
+        double bottom = 2 * a;
+        double soln = - top/bottom;
+        return soln;
+    }
 }

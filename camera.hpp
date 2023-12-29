@@ -25,6 +25,6 @@ public:
 
 Vec3 get_color(float r, float g, float b);
 
-bool hit_sphere(Vec3 C, float r, Ray ray);
+float hit_sphere(Vec3 C, float r, Ray ray);
 
 #endif
