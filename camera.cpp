@@ -1,8 +1,10 @@
 #include "camera.hpp"
 #include "vec3.hpp"
+#include "ray.hpp"
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include <iostream>
+#include <cmath>
 
 Camera::Camera() {
     //Image
@@ -13,7 +15,7 @@ Camera::Camera() {
     dy = Vec3(0, 1, 0);
 
     //camera position
-    camera_position = Vec3(0, 0, -1);
+    camera_position = Vec3(0, 0, -400);
     image_center = Vec3();
 
     //calculate the location of the upper left hand pixel
@@ -22,20 +24,26 @@ Camera::Camera() {
     upper_left = Vec3(x_float, y_float, 0);
 }
 
-Vec3 Camera::get_ray(int nx, int ny) {
+Ray Camera::get_ray(int nx, int ny) {
     Vec3 x_change = dx * nx;
     Vec3 y_change = dy * ny;
 
-    Vec3 ray = upper_left + x_change;
-    ray += y_change;
-    ray = ray - camera_position;
-    return ray;
+    Vec3 direction = upper_left + x_change;
+    direction += y_change;
+    direction = direction - camera_position;
+
+    Ray new_ray = Ray(camera_position, direction);
+    return new_ray;
 }
 
 Vec3 Camera::ray_color(int i, int j) {
     float y_max = upper_left.get_y();
-    Vec3 current_ray = get_ray(i, j);
-    float y_ray = current_ray.get_y();
+    Ray current_ray = get_ray(i, j);
+    Vec3 red = get_color(1.0f, 0.2f, 0.2f);
+    if (hit_sphere(Vec3(0, 0, 100), 50, current_ray)) { return red;}
+
+    Vec3 current_direction = current_ray.get_direction();
+    float y_ray = current_direction.get_y();
     float scaled_y = y_ray/y_max;
     float a = 0.5*(1 + scaled_y);
 
@@ -71,4 +79,18 @@ Vec3 get_color(float r, float g, float b) {
     int ig = int(255.99 * g);
     int ib = int(255.99 * b);
     return Vec3(ir, ig, ib);
+}
+
+bool hit_sphere(Vec3 C, float r, Ray new_ray) {
+    Vec3 o = new_ray.get_origin();
+    Vec3 d = new_ray.get_direction();
+    Vec3 o_C = o - C;
+    Vec3 d2 = d * 2;
+
+    float a = dot_product(d, d);
+    float b = dot_product(d2, o_C);
+    float c = dot_product(o_C, o_C) - r*r;
+
+    float discriminant = std::sqrt(b*b - 4*a*c);
+    return (discriminant >= 0);
 }

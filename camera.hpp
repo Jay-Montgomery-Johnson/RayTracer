@@ -2,6 +2,7 @@
 #define camera
 
 #include "vec3.hpp"
+#include "ray.hpp"
 #include "stb_image.h"
 
 class Camera {
@@ -16,12 +17,14 @@ private:
     Vec3 upper_left;
 
     Vec3 ray_color(int i, int j);
-    Vec3 get_ray(int nx, int ny);
+    Ray get_ray(int nx, int ny);
 public:
     Camera();
     void render();
 };
 
 Vec3 get_color(float r, float g, float b);
+
+bool hit_sphere(Vec3 C, float r, Ray ray);
 
 #endif

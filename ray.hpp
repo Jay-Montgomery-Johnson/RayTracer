@@ -12,6 +12,8 @@ public:
     Ray(Vec3 o, Vec3 d);
 
     Vec3 get_position(float t);
+    Vec3 get_origin();
+    Vec3 get_direction();
 };
 
 #endif

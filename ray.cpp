@@ -15,3 +15,11 @@ Vec3 Ray::get_position(float t) {
     Vec3 travel = direction * t;
     return origin + travel;
 }
+
+Vec3 Ray::get_direction() {
+    return direction;
+}
+
+Vec3 Ray::get_origin() {
+    return origin;
+}
