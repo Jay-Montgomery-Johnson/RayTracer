@@ -1,6 +1,7 @@
 #include "camera.hpp"
 #include "vec3.hpp"
 #include "ray.hpp"
+#include "sphere.hpp"
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include <iostream>
@@ -43,12 +44,9 @@ Vec3 Camera::ray_color(int i, int j) {
     Vec3 circle_center = Vec3(0, 0, 100);
     float t = hit_sphere(circle_center, 75, current_ray);
     if (t >= 0) {
-        //std::cout << t << " ";
         Vec3 point_on_sphere = current_ray.get_position(t);
         Vec3 normal = point_on_sphere - circle_center;
-        //point_on_sphere.print_vec();
         normal = unit_vector(normal);
-        //std::cout << normal.get_z() << "  ";
         float scaled_r = 0.5*(normal.get_x() + 1);
         float scaled_g = 0.5*(normal.get_y() + 1);
         float scaled_b = 0.5*(normal.get_z() + 1);
