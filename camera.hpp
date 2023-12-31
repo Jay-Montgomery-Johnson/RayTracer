@@ -4,6 +4,7 @@
 #include "vec3.hpp"
 #include "ray.hpp"
 #include "stb_image.h"
+#include "hittable_list.hpp"
 
 class Camera {
 private:
@@ -16,11 +17,11 @@ private:
     Vec3 dy;
     Vec3 upper_left;
 
-    Vec3 ray_color(int i, int j);
+    Vec3 ray_color(Ray current_ray, Hittable_list world);
     Ray get_ray(int nx, int ny);
 public:
     Camera();
-    void render();
+    void render(Hittable_list world);
 };
 
 Vec3 get_color(float r, float g, float b);

@@ -1,15 +1,27 @@
 #include "vec3.hpp"
 #include "ray.hpp"
 #include "camera.hpp"
+#include "hittable_list.hpp"
+#include "sphere.hpp"
 #include <iostream>
+#include <memory>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
 int main() {
+    Hittable_list world;
+    Vec3 center1 = Vec3(75, 37.5, 100);
+    Vec3 center2 = Vec3(-75, 37.5, 100);
+    Vec3 center3 = Vec3(0, -1000, 100);
+    float radius = 75;
+    world.add(std::make_shared<Sphere>(center1, radius));
+    world.add(std::make_shared<Sphere>(center2, radius));
+    radius = 1000;
+    world.add(std::make_shared<Sphere>(center3, radius));
     Camera cam;
-    cam.render();
+    cam.render(world);
     return 0;
 }
 

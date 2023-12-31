@@ -4,6 +4,7 @@
 #include "sphere.hpp"
 #include "stb_image.h"
 #include "stb_image_write.h"
+#include "hittable_list.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -37,21 +38,22 @@ Ray Camera::get_ray(int nx, int ny) {
     return new_ray;
 }
 
-Vec3 Camera::ray_color(int i, int j) {
+Vec3 Camera::ray_color(Ray current_ray, Hittable_list world) {
     float y_max = upper_left.get_y();
-    Ray current_ray = get_ray(i, j);
-    Vec3 red = get_color(1.0f, 0.2f, 0.2f);
-    Vec3 circle_center = Vec3(0, 0, 100);
-    float t = hit_sphere(circle_center, 75, current_ray);
-    if (t >= 0) {
-        Vec3 point_on_sphere = current_ray.get_position(t);
-        Vec3 normal = point_on_sphere - circle_center;
-        normal = unit_vector(normal);
+    
+    //for (int i=0; world.objects.size(); i++) {
+    hit_record rec;
+    bool did_hit = world.hit(current_ray, 0, 10000, rec);
+
+    if (did_hit) {
+        Vec3 point_on_sphere = rec.intersection_point;
+        Vec3 normal = rec.normal;
         float scaled_r = 0.5*(normal.get_x() + 1);
         float scaled_g = 0.5*(normal.get_y() + 1);
         float scaled_b = 0.5*(normal.get_z() + 1);
         return get_color(scaled_r, scaled_g, scaled_b);
     }
+    //}
 
     Vec3 current_direction = current_ray.get_direction();
     float y_ray = current_direction.get_y();
@@ -65,7 +67,7 @@ Vec3 Camera::ray_color(int i, int j) {
     return blue + white;
 }
 
-void Camera::render() {
+void Camera::render(Hittable_list world) {
     int CHANNEL_NUM = 3;
     uint8_t* pixels = new uint8_t[width * height * CHANNEL_NUM];
 
@@ -74,7 +76,8 @@ void Camera::render() {
     {
         for (int i = 0; i < width; ++i)
         {
-            Vec3 color = ray_color(i, j);
+            Ray current_ray = get_ray(i, j);
+            Vec3 color = ray_color(current_ray, world);
 
             pixels[index++] = color.get_x();
             pixels[index++] = color.get_y();

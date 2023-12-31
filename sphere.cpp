@@ -2,16 +2,16 @@
 #include "vec3.hpp"
 #include "ray.hpp"
 #include <cmath>
-
+#include <iostream>
 
 Sphere::Sphere(Vec3 c, float r) {
     center = c; 
     radius = r;
 }
 
-bool Sphere::hit(Ray& ray, float t_min, float t_max, hit_record& rec) {
-    Vec3 o = ray.get_origin();
-    Vec3 d = ray.get_direction();
+bool Sphere::hit(Ray& current_ray, float t_min, float t_max, hit_record& rec) {
+    Vec3 o = current_ray.get_origin();
+    Vec3 d = current_ray.get_direction();
     Vec3 o_C = o - center;
     Vec3 d2 = d * 2;
 
@@ -25,8 +25,10 @@ bool Sphere::hit(Ray& ray, float t_min, float t_max, hit_record& rec) {
         double bottom = 2 * a;
         double soln = - top/bottom;
         rec.t = soln;
-        rec.intersection_point = ray.get_position(t);
-        rec.normal = rec.intersection_point - o;
+        rec.intersection_point = current_ray.get_position(rec.t);
+        rec.normal = rec.intersection_point - center;
+        rec.normal = unit_vector(rec.normal);
+        //std::cout << rec.t;
         return true;
     }
 }
