@@ -17,8 +17,9 @@ private:
     Vec3 dy;
     Vec3 upper_left;
 
-    Vec3 ray_color(Ray current_ray, Hittable_list world);
+    Vec3 ray_color(Ray current_ray, Hittable_list world, int num_rays);
     Ray get_ray(int nx, int ny);
+    Vec3 random_surrounding_point();
 public:
     Camera();
     void render(Hittable_list world);
@@ -26,6 +27,7 @@ public:
 
 Vec3 get_color(float r, float g, float b);
 
-float hit_sphere(Vec3 C, float r, Ray ray);
+
+//float hit_sphere(Vec3 C, float r, Ray ray);
 
 #endif
