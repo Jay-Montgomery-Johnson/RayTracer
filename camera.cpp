@@ -37,25 +37,36 @@ Ray Camera::get_ray(int nx, int ny) {
     direction += random_sample;
     direction = direction - camera_position;
 
-
     Ray new_ray = Ray(camera_position, direction);
     return new_ray;
 }
 
-Vec3 Camera::ray_color(Ray current_ray, Hittable_list world, int num_rays) {
+Vec3 Camera::ray_color(Ray current_ray, Hittable_list world, int num_rays, int ray_depth) {
+    if (ray_depth <= 0) {
+        return Vec3(0,0,0);
+    }
+    
     float y_max = upper_left.get_y();
     
     //for (int i=0; world.objects.size(); i++) {
     hit_record rec;
-    bool did_hit = world.hit(current_ray, 0, 10000, rec);
+    bool did_hit = world.hit(current_ray, 0.0001, 10000, rec);
 
     if (did_hit) {
         Vec3 point_on_sphere = rec.intersection_point;
         Vec3 normal = rec.normal;
-        float scaled_r = (0.5*(normal.get_x() + 1))/num_rays;
-        float scaled_g = (0.5*(normal.get_y() + 1))/num_rays;
-        float scaled_b = (0.5*(normal.get_z() + 1))/num_rays;
-        return Vec3(scaled_r, scaled_g, scaled_b);
+
+        Vec3 r_vec = random_unit_vector();
+        //std::cout << " unit vec: " << dot_product(normal, r_vec);
+        if (dot_product(normal, r_vec) < 0) {
+            r_vec = Vec3(-r_vec.get_x(),-r_vec.get_y(),-r_vec.get_z());
+        }
+        //float scaled_r = r_vec.get_x()/num_rays;
+        //float scaled_g = r_vec.get_y()/num_rays;
+        //float scaled_b = r_vec.get_z()/num_rays;
+        Ray new_ray = Ray(rec.intersection_point, r_vec);
+        Vec3 rc = ray_color(new_ray ,world, num_rays, ray_depth-1);
+        return rc * 0.5;
     }
     //}
 
@@ -75,17 +86,19 @@ Vec3 Camera::ray_color(Ray current_ray, Hittable_list world, int num_rays) {
 void Camera::render(Hittable_list world) {
     int CHANNEL_NUM = 3;
     int rays_per_pixel = 100;
+    int ray_depth = 50;
     uint8_t* pixels = new uint8_t[width * height * CHANNEL_NUM];
 
     int index = 0;
     for (int j = height - 1; j >= 0; --j)
     {
+        std::clog << "\rScanlines remaining: " << j << ' ' << std::flush;
         for (int i = 0; i < width; ++i)
         {
             Vec3 color;
             for (int N=0; N<rays_per_pixel; N++){
                 Ray current_ray = get_ray(i, j);
-                Vec3 current_ray_color = ray_color(current_ray, world, rays_per_pixel);
+                Vec3 current_ray_color = ray_color(current_ray, world, rays_per_pixel, ray_depth);
                 color += current_ray_color;
             }
             color = get_color(color.get_x(), color.get_y(), color.get_z());
@@ -116,6 +129,7 @@ Vec3 get_color(float r, float g, float b) {
     int ib = int(255.99 * b);
     return Vec3(ir, ig, ib);
 }
+
 
 
 

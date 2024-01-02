@@ -11,10 +11,11 @@
 #include "stb_image_write.h"
 
 int main() {
+    //+44 (0)117 4289400
     Hittable_list world;
-    Vec3 center1 = Vec3(75, 37.5, 100);
-    Vec3 center2 = Vec3(-75, 37.5, 100);
-    Vec3 center3 = Vec3(0, -1000, 100);
+    Vec3 center1 = Vec3(75, 37.5, 40);
+    Vec3 center2 = Vec3(-75, 37.5, 40);
+    Vec3 center3 = Vec3(0, -1000, 350);
     float radius = 75;
     world.add(std::make_shared<Sphere>(center1, radius));
     world.add(std::make_shared<Sphere>(center2, radius));

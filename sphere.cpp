@@ -24,6 +24,7 @@ bool Sphere::hit(Ray& current_ray, float t_min, float t_max, hit_record& rec) {
         double top = b + std::sqrt(discriminant);
         double bottom = 2 * a;
         double soln = - top/bottom;
+        if (soln < t_min || soln > t_max) {return false;}
         rec.t = soln;
         rec.intersection_point = current_ray.get_position(rec.t);
         rec.normal = rec.intersection_point - center;

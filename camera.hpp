@@ -17,7 +17,7 @@ private:
     Vec3 dy;
     Vec3 upper_left;
 
-    Vec3 ray_color(Ray current_ray, Hittable_list world, int num_rays);
+    Vec3 ray_color(Ray current_ray, Hittable_list world, int num_rays, int ray_depth);
     Ray get_ray(int nx, int ny);
     Vec3 random_surrounding_point();
 public:
