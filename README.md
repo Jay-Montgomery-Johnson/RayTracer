@@ -1,1 +1,6 @@
-![multiple_spheres](https://github.com/Jay-Montgomery-Johnson/RayTracer/assets/150203322/154d7ebc-fb33-4005-af42-87b6f9c27526)
+
+
+
+
+
+![mirrored_image](https://github.com/Jay-Montgomery-Johnson/RayTracer/assets/150203322/a25c56a6-9376-48fb-b955-b79f9d04a49d)
