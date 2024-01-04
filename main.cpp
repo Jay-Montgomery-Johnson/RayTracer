@@ -3,6 +3,7 @@
 #include "camera.hpp"
 #include "hittable_list.hpp"
 #include "sphere.hpp"
+#include "material.hpp"
 #include <iostream>
 #include <memory>
 #define STB_IMAGE_IMPLEMENTATION
@@ -11,16 +12,28 @@
 #include "stb_image_write.h"
 
 int main() {
-    //+44 (0)117 4289400
+    //create world <-rename to scene
     Hittable_list world;
+    Vec3 blue = Vec3(0,0.1,0.8);
+    Vec3 yellow = Vec3(0.5,0.5,0.0); 
+    Vec3 green = Vec3(0.0,0.9,0.0); 
+    Diffuse mat_d = Diffuse(blue);
+    Metal mat_m = Metal(yellow);
+    Diffuse mat_f = Diffuse(green);
+    std::shared_ptr<Diffuse> mat1 = std::make_shared<Diffuse>(mat_d);
+    std::shared_ptr<Metal> matm = std::make_shared<Metal>(mat_m);
+    std::shared_ptr<Diffuse> matf = std::make_shared<Diffuse>(mat_f);
+
+    //populate world
     Vec3 center1 = Vec3(75, 37.5, 40);
     Vec3 center2 = Vec3(-75, 37.5, 40);
     Vec3 center3 = Vec3(0, -1000, 350);
     float radius = 75;
-    world.add(std::make_shared<Sphere>(center1, radius));
-    world.add(std::make_shared<Sphere>(center2, radius));
+    world.add(std::make_shared<Sphere>(center1, radius, mat1));
+    world.add(std::make_shared<Sphere>(center2, radius, matm));
     radius = 1000;
-    world.add(std::make_shared<Sphere>(center3, radius));
+    world.add(std::make_shared<Sphere>(center3, radius, matf));
+    //render
     Camera cam;
     cam.render(world);
     return 0;

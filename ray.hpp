@@ -3,6 +3,7 @@
 
 #include "vec3.hpp"
 
+
 class Ray {
 private:
     Vec3 origin;

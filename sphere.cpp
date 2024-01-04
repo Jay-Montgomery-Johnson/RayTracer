@@ -1,10 +1,13 @@
 #include "sphere.hpp"
+#include "material.hpp"
 #include "vec3.hpp"
 #include "ray.hpp"
 #include <cmath>
+#include <memory>
 #include <iostream>
 
-Sphere::Sphere(Vec3 c, float r) {
+Sphere::Sphere(Vec3 c, float r, std::shared_ptr<Material> material) {
+    mat = material;
     center = c; 
     radius = r;
 }
@@ -29,6 +32,7 @@ bool Sphere::hit(Ray& current_ray, float t_min, float t_max, hit_record& rec) {
         rec.intersection_point = current_ray.get_position(rec.t);
         rec.normal = rec.intersection_point - center;
         rec.normal = unit_vector(rec.normal);
+        rec.material = mat;
         //std::cout << rec.t;
         return true;
     }

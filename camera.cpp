@@ -6,6 +6,7 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include "hittable_list.hpp"
+#include "material.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -56,17 +57,21 @@ Vec3 Camera::ray_color(Ray current_ray, Hittable_list world, int num_rays, int r
         Vec3 point_on_sphere = rec.intersection_point;
         Vec3 normal = rec.normal;
 
-        Vec3 r_vec = random_unit_vector();
-        //std::cout << " unit vec: " << dot_product(normal, r_vec);
-        if (dot_product(normal, r_vec) < 0) {
-            r_vec = Vec3(-r_vec.get_x(),-r_vec.get_y(),-r_vec.get_z());
+        //Vec3 r_vec = random_unit_vector();
+        //if (dot_product(normal, r_vec) < 0) {
+        //    r_vec = Vec3(-r_vec.get_x(),-r_vec.get_y(),-r_vec.get_z());
+        //}
+        Vec3 mat_col;
+        Ray new_ray;
+        if(rec.material->scatter(current_ray, rec, mat_col, new_ray)){
+            Vec3 rc = ray_color(new_ray ,world, num_rays, ray_depth-1);
+            rc = attenuate_color(rc, mat_col);
+            return rc;
         }
-        //float scaled_r = r_vec.get_x()/num_rays;
-        //float scaled_g = r_vec.get_y()/num_rays;
-        //float scaled_b = r_vec.get_z()/num_rays;
-        Ray new_ray = Ray(rec.intersection_point, r_vec);
-        Vec3 rc = ray_color(new_ray ,world, num_rays, ray_depth-1);
-        return rc * 0.5;
+        
+        //Ray new_ray = Ray(rec.intersection_point, r_vec);
+        //mat_col = Vec3(0,0.8,0.7);
+        return Vec3(0,0,0);
     }
     //}
 
@@ -130,8 +135,24 @@ Vec3 get_color(float r, float g, float b) {
     return Vec3(ir, ig, ib);
 }
 
+Vec3 attenuate_color(Vec3& ray_color, Vec3& object_color) {
+    float new_r = ray_color.get_x() * object_color.get_x();
+    float new_g = ray_color.get_y() * object_color.get_y();
+    float new_b = ray_color.get_z() * object_color.get_z();
+    return Vec3(new_r, new_g, new_b);
+}
 
 
+bool scatter_diffuse(Ray& r_in, hit_record& rec,Vec3& attenuation, Ray& scattered) {
+    Vec3 r_vec = random_unit_vector();
+    if (dot_product(rec.normal, r_vec) < 0) {
+        r_vec = Vec3(-r_vec.get_x(),-r_vec.get_y(),-r_vec.get_z());
+    }
+    scattered = Ray(rec.intersection_point, r_vec);
+    attenuation = Vec3(0,0.6,0.7);
+    return true;
+}
+        
 
 /*
 float hit_sphere(Vec3 C, float r, Ray new_ray) {

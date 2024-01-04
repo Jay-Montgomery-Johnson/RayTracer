@@ -27,6 +27,10 @@ public:
 
 Vec3 get_color(float r, float g, float b);
 
+Vec3 attenuate_color(Vec3& ray_color, Vec3& object_color);
+
+bool scatter_diffuse(Ray& r_in, hit_record& rec,Vec3& attenuation, Ray& scattered);
+        
 
 //float hit_sphere(Vec3 C, float r, Ray ray);
 
